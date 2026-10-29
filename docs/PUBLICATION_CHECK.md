@@ -28,3 +28,7 @@
 - 登录由用户在 GitHub 官方浏览器界面完成，令牌由 Git Credential Manager 管理，不写入仓库、远程地址或脚本。
 
 此记录随首次源码提交发布。实际提交 ID、推送结果和工作区状态以 Git 命令及 GitHub 返回结果为准。
+
+## 首次推送后核对
+
+首次提交 `f438fe61b7ececa3e26af2d9dfc8b847b1a55188` 已通过普通推送建立 `origin/main`，远程与本地 SHA 一致，工作区干净。首次远程 [GitHub Actions](https://github.com/shipshipliucixin1/innovation-dance/actions/runs/40911646963) 已在 Windows/Linux 完成并通过。随后保留此提交，通过后续正常提交补充“commit 后、push 前”的历史复查，保证刚输入的提交说明也被检查；没有 amend、rebase、reset 或强制推送。

@@ -44,6 +44,8 @@ if ($diffStatus -eq 1) {
 } else {
     Write-Host 'No new working changes. Checking for an existing local commit to push.'
 }
+& $projectPython (Join-Path $PSScriptRoot 'check_secrets.py') --staged-only
+if ($LASTEXITCODE -ne 0) { throw 'Post-commit safety check failed (including the new commit message). The local commit is preserved; no push was attempted.' }
 & git @gitOptions push -u origin main
 if ($LASTEXITCODE -ne 0) { throw 'Push failed. The local commit is preserved; resolve login/network/remote updates and retry. Never force push.' }
 Write-Host 'GitHub main is up to date: https://github.com/shipshipliucixin1/innovation-dance'

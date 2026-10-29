@@ -40,10 +40,12 @@ class PublicationTests(unittest.TestCase):
             (root / 'example.txt').write_text('Removed fixture', 'utf-8')
             git('add', 'example.txt')
             git('commit', '-m', 'Remove fixture')
+            git('commit', '--allow-empty', '-m', 'Synthetic commit-message fixture: ' + 'sk-' + 'C' * 40)
             with patch.object(check_secrets, 'ROOT', root):
                 counts, findings = check_secrets.scan()
             self.assertGreater(counts['historical_objects'], 0)
             self.assertTrue(any(scope == 'history' and label == 'provider-api-key' for scope, _, label, _ in findings))
+            self.assertTrue(any(scope == 'history' and path.startswith('.history/commit-') and label == 'provider-api-key' for scope, path, label, _ in findings))
 
 
 if __name__ == '__main__':
