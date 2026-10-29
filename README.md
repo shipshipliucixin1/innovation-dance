@@ -1,35 +1,25 @@
-# ProjectFlow
+# ProjectFlow V0.2
 
-**AI-native Workspace for Learning, Thinking, Building and Collaborating**
+**面向创造者的 AI 原生认知与行动工作台。**
 
-A local workspace for creators in any field. Bring an unfinished idea, explore it through lightweight thinking prompts, turn it into a small experiment, delegate a concrete task, and return with evidence. Share a deliberately selected public snapshot when you want collaborators.
+把学习、思考、行动、反馈与合作放在一个轻量空间：带着一个模糊想法开始，借助自然的提问理解问题，保存想法，设计小验证，形成项目，导出执行任务，再带着真实成果回来讨论。
 
-[中文说明](README.zh-CN.md) · [5-minute demo](DEMO_GUIDE.md) · [Development report](docs/DEVELOPMENT_REPORT.md) · [Contributing](CONTRIBUTING.md)
+[五分钟演示](DEMO_图形界面DE.md) · [开发报告](docs/DEVELOPMENT_REPORT.md) · [贡献指南](CONTRIBUTING.md) · [持续更新指南](docs/GITHUB_WORKFLOW.md)
 
-Source repository: [shipshipliucixin1/innovation-dance](https://github.com/shipshipliucixin1/innovation-dance). The repository name is `innovation-dance`; the application is **ProjectFlow**.
+![认知工作台与明确标记的虚构示例对话](docs/screenshots/workbench.png)
 
-![Thinking workspace with explicitly labelled fictional demo conversation](docs/screenshots/workbench.png)
+源码仓库：[shipshipliucixin1/innovation-dance](https://github.com/shipshipliucixin1/innovation-dance)。仓库名为 `innovation-dance`，应用名称为 **ProjectFlow**。
 
-## What works in V0.2
+## 安装与启动
 
-- Free conversation and 13 interactive thinking templates; six user-controlled thinking states; up to three follow-up directions after each AI answer, with rule-based fallback.
-- Editable idea extraction with source-message references. Ideas, micro experiments and projects remain separate records.
-- Project context, plan snapshots with change reasons, state-specific reflection prompts and in-app due reminders.
-- Editable execution briefs, clipboard/Markdown export, explicit delegation states and manual/text/JSON result import. This app does **not** execute external agents.
-- RSS/Atom parsing and deduplication, manual article entry, reading discussions and model-based article analysis. Finite feed discovery verifies the RSS/Atom links declared by websites you supply.
-- Working local collaboration plaza: separate public snapshots, persisted comments, collaboration proposals and owner responses. Public-project AI receives only public snapshots/comments and the participant's explicit input.
-- Four fictional demo identities and cross-domain projects in a separate resettable database. Core non-AI interactions work without an API key.
+需要 Windows 10/11、Miniconda/Conda；首次创建环境需要联网。代码只依赖 Python 3.11 标准库，无须 Node、npm、Streamlit，也不要求购买特定模型服务。
 
-## Windows quick start
+1. 将项目解压到可写目录，中文和空格路径可用。
+2. 双击 `setup.bat`：创建当前目录 `.conda-env` 并验证解释器。找不到 Conda 时，在 Miniconda Prompt 中进入目录再运行。已有环境不会被自动重建。
+3. 双击 `start.bat`：浏览器打开 [本机工作台](http://127.0.0.1:43127)，保留启动窗口；Ctrl+C 停止。
+4. 顶部切换「本地社区演示」，无需密钥就能体验非 AI 功能。
 
-Requires Windows 10/11 and Miniconda/Conda. The app itself uses **Python 3.11 standard library only**; no Node, npm, Streamlit or paid service is required. Internet is needed initially to download Python through Conda.
-
-1. Download/extract this source into a writable folder. Paths containing spaces and Chinese characters are supported.
-2. Run `setup.bat`. It creates **only this project's `.conda-env`** and verifies the interpreter before dependency operations. If Conda cannot be found, run it from a Miniconda Prompt. An incomplete existing environment is left untouched and reported.
-3. Run `start.bat`. Keep the console open. Your browser opens [the local app](http://127.0.0.1:43127).
-4. Select **Demo Mode · 本地社区** in the top bar to explore without configuring a model.
-
-To use Git instead of downloading a ZIP:
+也可以通过 Git 下载：
 
 ```powershell
 git clone https://github.com/shipshipliucixin1/innovation-dance.git
@@ -38,61 +28,71 @@ cd innovation-dance
 .\start.bat
 ```
 
-The server always binds to `127.0.0.1`. To choose another local port, set `PROJECTFLOW_PORT` before starting. Stop with Ctrl+C. Setup never installs in base or another project environment, modifies PATH, runs `conda init`, changes GPU drivers or automatically rebuilds an environment.
+脚本不在 base 安装、不修改其他环境、不执行 conda init、不修改 PATH 或 GPU 驱动。端口冲突时先关闭旧实例，或在启动前设置 `PROJECTFLOW_PORT`。服务始终绑定 `127.0.0.1`。
 
-## Configure an optional model
+## 核心功能与个人模式
 
-Open **设置 → AI 模型**. Enter your provider's OpenAI-compatible API root (typically ending in `/v1`), model name and optional API key. Apply configuration, then click **测试已应用的连接**. The test sends one actual small model request and may be billed by your provider. Redirecting model endpoints are rejected; enter the final URL.
+- **今日探索**：保存真实文章、阅读原文、标记已读、收藏、模型阅读分析。每日精选是本地兴趣关键词与未读规则排序的前三篇，不是虚构的全网推荐。
+- **AI 工作台**：自由聊天；六种可手动改变的状态；13 种轻量填空模板；AI 回复下最多三个思考标签。模板至少填写一个实质字段即可。模型推荐失败时使用规则标签，保留正常聊天。
+- **想法**：从当前对话提取可编辑草案，人工检查后保存；可确认或拒绝。保留来源对话与消息 ID，不自动当成事实。
+- **微实验**：生成或手工建立可编辑实验卡，记录假设、条件、最小步骤、产物、判断依据、失败原因、时间和第一步。
+- **项目**：编辑目标、当前认识、方案、证据、下一步；关联想法、讨论和实验。每次编辑保存版本及变更原因。
 
-An unchecked secure-storage option keeps the key only in server memory until the server stops. Checking it uses Windows Credential Manager through the native Windows API. Failure is reported; there is no plaintext fallback. Existing keys are never displayed. Non-Windows users can use `.env` or a session-only key.
+不是每次探索都需要建立项目，模板也可以随时跳过。
 
-Alternatively copy `.env.example` to `.env` and fill:
+## 人工智能模型设置
 
-```dotenv
-LLM_API_KEY=
-LLM_BASE_URL=
-LLM_MODEL=
-```
+进入 **设置 → AI 模型**，填写 接口基础地址（通常到 `/v1`）、模型名称、接口密钥 和超时，先「应用配置」，再「测试已应用的连接」。兼容聊天补全协议，允许无需密钥的本机兼容服务。测试会真实发送一次请求，可能计费。
 
-Restart after editing `.env`. For startup non-secret settings, precedence is process environment → `.env` → saved GUI settings. A GUI change applies to the running process; restart reapplies environment settings. Key precedence is a GUI session key or saved Windows credential → process-environment/`.env` key. Clear the session/Windows credential to use an environment key instead. The clear-key button does **not** edit `.env`. Keyless local compatible models are supported. Base URLs, model names and timeout settings are stored locally; keys are never stored in SQLite or exported data.
+接口密钥 输入默认隐藏，不会回显已有密钥。未勾选安全保存时只在服务进程内存中使用；勾选后通过原生 Windows 凭据管理器 保存。安全存储不可用会报错，绝不写入普通数据库或明文配置。API 错误不会回显可能带密钥的服务商响应正文。
 
-Live chat, extraction, AI drafts, article analysis and public-project AI need a working model. Missing configuration and network errors are visible. Fixture dialogue is explicitly labelled; the app never silently substitutes demo answers for real model calls.
+也可以复制 `.env.example` 为 `.env`，填写 `LLM_API_KEY`、`LLM_BASE_URL`、`LLM_MODEL`，重启服务。启动时非密钥配置优先级：进程环境变量 → `.env` → 已保存的界面设置。图形界面 修改对本次运行有效；重启重新应用环境配置。密钥优先级：图形界面 会话密钥或已保存的 Windows 凭据 → 进程环境变量/`.env` 密钥。要改用环境中的密钥，先清除会话和 Windows 凭据。清除密钥按钮不修改 `.env`。
 
-## Personal mode and local plaza
+无配置仍能打开应用、管理数据、填写模板、浏览示例、手工创建实验与项目、组装/导出任务、导入结果、评论和提出合作。实时讨论、想法提取、AI 草案、AI 阅读分析和公开 AI 需要配置模型。示例对话明确标为预置内容，不会伪装成实时回复。
 
-Personal mode starts empty. Add an article or open AI 工作台. Choose a thinking direction, fill one meaningful field, and continue discussing. Extract an idea, inspect/edit it, then save it. Generate an experiment or a project draft when ready. Every project edit creates a plan version. Record the evidence and reason for changes.
+## 执行与反馈
 
-Use **交给 AI 执行** to create an editable brief. Without a model, choose **用项目字段组装**; this explicitly labelled operation assembles existing project fields. Copy/download the brief, submit it yourself to your external tool, then mark it delegated. Paste a result or import a `.txt`, `.md` or `.json` report (JSON fields: `summary`, `expected`, `evidence`, `paths`, `issues`, `unfinished`, `review`). File paths are text references; ProjectFlow does not read those files. AI review creates a linked private reflection conversation from saved reports.
+项目中选择「交给 AI 执行」。可以调用模型生成任务书，或选择「用项目字段组装（无需模型）」；后者明确标记为本地组装。所有字段可编辑，包含上下文、输入、输出、约束、验收标准、禁止操作和人工确认事项。
 
-To demonstrate collaboration, select Demo Mode and 林舟 (developer). Publish a project only after editing/checking the preview. Switch to 陈禾, open the public project, comment and propose a first collaboration step. Switch back to 林舟 to accept/decline. Refresh/restart: those records persist. The demo is a local identity simulation, **not account authentication**. Personal projects never automatically enter the demo plaza.
+保存后查看、复制或下载 Markdown，自己提交到外部工具。再手动标记「已交给外部执行工具」。这一步不表示 ProjectFlow 自动执行了任务。
 
-## Content discovery
+执行后粘贴结果，或导入 `.txt` / `.md` / `.json`。JSON 可含 `summary`、`expected`、`evidence`、`paths`、`issues`、`unfinished`、`review`。文件路径只作为记录，不自动读取本机文件。结果关联到任务与项目；「AI 结果复盘」会建立关联私人对话，依据已保存的计划和报告讨论预期、证据、取舍与下一步。
 
-Add a real RSS/Atom URL under Settings and synchronize manually. Or supply a blog homepage to **发现信息源**: the app reads its declared alternate RSS/Atom links and fetches each candidate to verify it. With no URL it checks up to five saved sources. Coverage is explicitly bounded; there is **no general search provider integration** in V0.2. Interests guide manual source selection and simple local article ordering. Article analysis is an explicit model operation, not a fabricated quality score. Respect publishers' terms and copyright; do not redistribute your article database.
+设置提醒日期与跟进问题，应用打开时显示到期事项。可延期、完成或取消。项目中的四种进展状态会改变引导问题；遇到困难时询问具体偏差。没有后台常驻或系统通知功能。
 
-## Data, migration and privacy
+## 本地合作广场
 
-Everything is under the project folder unless a developer specifies `--data-root`:
+本地社区演示 有四位虚构角色，分别面向软件、数据、产品与内容创作，数据独立保存。
 
-| Location | Content |
-| --- | --- |
-| `data/personal.sqlite3` | Personal conversations, ideas, projects and local plaza |
-| `data/demo.sqlite3` | Fictional identities/projects and actual local demo interactions |
-| `data/model.json` | Base URL/model/timeout only |
-| `.env` | Optional user-managed local secret configuration |
-| Windows Credential Manager | Optional protected key, scoped to this checkout's absolute path |
+1. 选择林舟，在「我的项目」打开项目。
+2. 点击「发布到合作广场」，检查和编辑公开字段，勾选确认后发布。
+3. 切换陈禾，打开公开项目，发表评论、提出合作；配置模型后可进入公开上下文 AI 讨论。
+4. 切回林舟，查看评论与提议，手动接受或婉拒。
+5. 刷新、重启，实际写入的互动仍在。
 
-Browser storage holds only the selected local mode/identity. It does not hold private records or keys. Stop the application before copying the database files for a full backup/restore. Settings can also export the current identity's records to inspectable JSON. V0.2 JSON export is an archive, **not an automatic restore format**. The old `ProjectFlow-local` v2 JSON export can be imported through Settings: additions only, one transaction, no old API settings/keys imported. Old localStorage and old application files are not modified. Do not import the same archive repeatedly unless you want duplicate copies.
+公开快照与私人项目分开保存，不包含私人项目 ID、聊天或未主动选择的证据。修改私人项目不会自动更新快照；更新公开内容需再次确认。公开 AI 使用单独的上下文函数，只接收快照、公开评论、参与者当前输入及其此公开讨论的历史；不读取作者私人资料，不代替作者接受合作。
 
-Schema version 2 initializes new databases idempotently; upgrading an existing supported version makes a SQLite backup first. Unknown newer schemas are rejected. This is the first SQLite version; the old app had no SQLite database to migrate. Demo reset touches only the demo database.
+身份切换只用于本地演示，不是登录、认证或互联网权限系统。个人模式与演示模式使用独立数据库；默认不混入真实项目。设置可重置整个演示库，不删除个人数据库。
 
-Context sent to a provider includes the current conversation (last 20 messages), selected article text (up to 24,000 characters), linked project and interests; extraction/drafting uses selected records. Reflection includes project tasks and their manually supplied results. Public discussions use a separate context builder with only public whitelisted fields, up to 50 public comments, and that participant's public-discussion history/current input. It never fetches a private project or owner conversation. Public materials are text; no automatic private file fetching or agent tools exist.
+## 阅读与有限发现
 
-The local server checks Host, Origin and a per-process CSRF token; static serving is allowlisted. External text is escaped. Feed requests reject local/private/reserved addresses and check redirect destinations. API credentials are not reflected from provider error bodies or logged. This is still a **single-user local application**: anyone with OS-level access or control of this localhost service can access local data/simulated identities. Do not expose it through a proxy, LAN binding or public tunnel. SQLite business data is not encrypted. This folder may itself be synced by your chosen cloud-sync software; its storage policy is outside ProjectFlow's control. `.gitignore` prevents accidental normal Git inclusion, not filesystem sync or malicious access.
+添加真实 RSS / Atom，手动同步并去重；或手动保存文章链接并粘贴正文。只填链接不表示已获取全文。
 
-## Development and tests
+「发现信息源」接受兴趣和博客网址：从该网页的 RSS / Atom 声明中发现并真实抓取验证；留空网址时检查最多五个已保存源。未集成全网搜索服务，不依据兴趣编造作者、RSS 或文章。兴趣用于明确人工筛选目标。请求只允许公开互联网地址；内网、本机地址和重定向中的私有地址被拒绝。
 
-Windows, after setup:
+## 数据、隐私与旧版迁移
+
+`data/personal.sqlite3` 保存个人数据，`data/demo.sqlite3` 保存虚构社区及演示互动，`data/model.json` 只保存 API 地址、模型名称、超时；浏览器只记住模式与模拟身份。业务数据库未加密，需保护本机访问权限。若目录被同步盘管理，同步软件仍可能同步这些文件；`.gitignore` 不控制同步盘行为。
+
+完整备份/恢复：关闭应用后复制/还原 SQLite 文件。设置中也可导出当前身份可见记录的 JSON 归档；V0.2 JSON 暂无自动还原接口。旧版 `ProjectFlow-local` 的 v2 JSON 备份可显式导入，只新增、不覆盖；无效数据事务回滚，不导入旧 API 设置与密钥。旧浏览器 localStorage 和旧源文件保持原样。重复导入同一备份会重复新增。
+
+数据库迁移幂等初始化；已知旧 SQLite 版本迁移前自动备份；拒绝来自更高版本的库。本次是首次 SQLite 版本，旧版无 SQLite 数据库。
+
+私人讨论会发送最近 20 条消息、选择的文章文本（最多 24,000 字符）、关联项目与兴趣至配置服务；草案生成发送所选记录，复盘发送计划、任务及手工回收结果。公开 AI 不走私人上下文获取逻辑。密钥不写 SQLite、导出或日志；模型地址不允许嵌入凭据或查询参数。
+
+本地服务有 Host/Origin/CSRF 检查、静态路径白名单与文本转义，但仍是可信本机单用户程序，不能抵御有本机权限的恶意用户。不要通过反向代理、隧道或改绑地址公开服务。正式公网部署须另行实现认证、权限、配额与隔离。
+
+## 开发、测试与限制
 
 ```powershell
 .\.conda-env\python.exe scripts\verify_env.py
@@ -100,18 +100,14 @@ Windows, after setup:
 .\.conda-env\python.exe -m projectflow.server --no-browser --data-root .qa
 ```
 
-For macOS/Linux, create a project-local Conda environment with Python 3.11 and use `conda run -p ./.conda-env python -m projectflow.server`; Windows credential storage is unavailable there. CI uses isolated GitHub runners on Windows/Linux and only local model fixtures. No paid calls are used in tests. Browser UI checks and verification limits are documented in the development report.
+自动化测试使用本地样例与模拟模型，不调用付费 API。GitHub Actions 在临时 Windows/Linux runner 验证依赖安装、编译与核心测试。详见 [贡献指南](CONTRIBUTING.md) 和 [开发报告](docs/DEVELOPMENT_REPORT.md)。
 
-Source layout: `projectflow/store.py` (SQLite), `thinking.py` (templates), `service.py` (business operations and ownership), `llm.py` (compatible client), `content.py` (feeds), `credentials.py` (native secure storage), `server.py` (HTTP), `static/` (retained design plus UI), `tests/` (core and loopback integration).
+当前未实现：正式公网多用户、后台通知、自主编程智能体、流式输出、全网搜索、复杂推荐、多人并发编辑冲突解决。长内容和大量记录尚未做分页、全文检索；模型实际质量取决于所选服务。真实付费 API 需要用户自行测试连接。
 
-## Current limits and release boundary
+公开源码不等于创建公网服务，也不会自动上传本机数据库。MIT 许可证适用于代码和原创虚构示例，不适用于用户导入的第三方文章。
 
-No public multi-user authentication, real-time team sync, background notification service, automated coding agent, streaming output, general web search or learned recommendation model. Search discovery is finite, and providers/publishers may be unreachable. Long conversations/projects are intentionally small-scale; no pagination/search or optimistic editing conflict resolution yet. Context is selected, not an unlimited knowledge index. Model quality and real paid-provider integration must be checked with your chosen configuration. Internet-facing deployment requires a different security architecture.
+## 以后如何更新代码仓库
 
-Publishing the source does not start a hosted service or publish your local databases. MIT licence applies to ProjectFlow code and original fictional fixtures, not third-party content imported by users.
+修改代码后，双击 `update-github.bat`，检查列出的文件并输入一句更新说明即可。脚本先获取远程状态，检查工作文件、暂存区与历史中的已知凭据特征及禁止上传路径，然后提交并正常推送到 `origin/main`。远程有本地尚未包含的新提交时停止，不强制推送，不改写历史。推送失败时，本地提交会保留，可在恢复登录/网络后重试。
 
-## Keep GitHub up to date
-
-After changing code, double-click `update-github.bat`, review the listed changes and enter a short commit message. The shortcut fetches the remote, refuses to overwrite remote work, checks working files/index/history for known credential signatures and private/generated paths, commits changes, and performs an ordinary push to `origin/main`. It never force-pushes or rewrites existing commits. It uses only the project interpreter and existing Git authentication. A failed push leaves your local commit available to retry.
-
-For manual commands and recovery, see [GitHub workflow](docs/GITHUB_WORKFLOW.md). The included scanner is a local heuristic, not an exhaustive secret-detection guarantee; review new documents and screenshots yourself. If it reports potential credentials, stop and investigate before any push.
+详细手动命令和故障处理见 [GitHub 持续更新指南](docs/GITHUB_WORKFLOW.md)。安全扫描属于启发式检查，不能识别所有私人信息；新增文档和截图仍需自己检查。发现可能的密钥时应停止推送并处理，不要绕过检查。
