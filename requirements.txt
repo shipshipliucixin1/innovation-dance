@@ -1,0 +1,2 @@
+# ProjectFlow V0.2 uses only Python 3.11's standard library.
+# No packages are installed in base, global Python or another environment.
